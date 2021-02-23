@@ -37,11 +37,11 @@ char *word_start(char *str)
 char *word_terminator(char *word)
 {
   /* If we see a space char, we found the end of the word */
-  while (*str) {
-    if (space_char(*str)) {
-      return str;
+  while (*word) {
+    if (space_char(*word)) {
+      return word;
     }
-    str++;
+    word++;
   }
   return '\0';
 }
@@ -82,7 +82,22 @@ char *copy_str(char *inStr, short len)
      tokens[2] = "string" 
      tokens[3] = 0
 */
-char **tokenize(char* str);
+char **tokenize(char* str)
+{
+  int numTokens = count_words(str);
+  char **tokenVector = malloc((numTokens+1) * sizeof(char*));
+  char **currTkn = tokenVector;
+  char *tknEnd;
+  for (char *tknStart = str; tknStart; tknStart = tknEnd) {
+    tknStart = word_start(tknStart);
+    tknEnd = word_terminator(tknStart);
+    int tknLength = tknEnd - tknStart;
+    *currTkn = copy_str(tknStart, tknLength);
+    currTkn++;
+  }
+  **(tokenVector + numTokens) = '\0';
+  return tokenVector;
+}
 
 /* Prints all tokens. */
 void print_tokens(char **tokens)
