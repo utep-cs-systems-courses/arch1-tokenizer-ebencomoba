@@ -43,7 +43,7 @@ char *word_terminator(char *word)
     }
     word++;
   }
-  return '\0';
+  return word;
 }
 
 /* Counts the number of words in the string argument. */
@@ -52,8 +52,11 @@ int count_words(char *str)
   /* We find the number of words with word_start
      and end them with word terminator */
   int numWords = 0;
+  char *zero_ptr = '\0';
   while (*str) {
     str = word_start(str);
+    if (str == zero_ptr)
+      return numWords;
     numWords++;
     str = word_terminator(str);
   }
@@ -66,7 +69,7 @@ char *copy_str(char *inStr, short len)
 {
   /* We make space for the string and copy the chars to it */
   char *token_ptr = malloc((len+1) * sizeof(char));
-  for (int counter = 0; counter < len; counter) {
+  for (int counter = 0; counter < len; counter++) {
     *(token_ptr + counter) = *(inStr + counter);
   }
   *(token_ptr + len) = '\0';
@@ -86,16 +89,14 @@ char **tokenize(char* str)
 {
   int numTokens = count_words(str);
   char **tokenVector = malloc((numTokens+1) * sizeof(char*));
-  char **currTkn = tokenVector;
-  char *tknEnd;
-  for (char *tknStart = str; tknStart; tknStart = tknEnd) {
-    tknStart = word_start(tknStart);
+  char *tknEnd = str;
+  for (int counter = 0; counter < numTokens; counter++) {
+    char *tknStart = word_start(tknEnd);
     tknEnd = word_terminator(tknStart);
     int tknLength = tknEnd - tknStart;
-    *currTkn = copy_str(tknStart, tknLength);
-    currTkn++;
+    *(tokenVector + counter) = copy_str(tknStart, tknLength);
   }
-  **(tokenVector + numTokens) = '\0';
+  *(tokenVector + numTokens) = '\0';
   return tokenVector;
 }
 
@@ -104,8 +105,13 @@ void print_tokens(char **tokens)
 {
   /* We print all tokens */
   int counter = 0;
-  while (**tokens) {
-    printf("tokens[%d] = \"%s\"\n", counter, *tokens);
+  while (*tokens) {
+    printf("tokens[%d] = \"", counter);
+    while (**tokens) {
+      putchar(**tokens);
+      (*tokens)++;
+    }
+    printf("\"\n");
     counter++;
     tokens++;
   }
@@ -115,9 +121,11 @@ void print_tokens(char **tokens)
 void free_tokens(char **tokens)
 {
   /* We free the memory from the tokens and the token vector */
-  while (**tokens) {
-    free(*tokens);
-    tokens++;
+  char **currTkn = tokens;
+  char *zero_ptr = '\0';
+  while (currTkn != zero_ptr) {
+    free(*currTkn);
+    currTkn++;
   }
   free(tokens);
 }
