@@ -11,6 +11,9 @@ typedef struct s_List {
   struct s_Item *root;
 } List;
 
+/* Copy the string from src to dest */
+char *copy_string(char *src);
+
 /* Initialize the linked list to keep the history. */
 List* init_history();
 

@@ -1,5 +1,5 @@
 # Object files that we need for Tokenizer
-OBJS = tokenizer.o uimain.o
+OBJS = tokenizer.o uimain.o history.o
 
 # Flags to compile
 CFLAGS = -g -O3
@@ -10,7 +10,7 @@ all: Tokenizer
 Tokenizer: $(OBJS)
 	cc -o Tokenizer $(CFLAGS) $(OBJS)
 
-$(OBJS): tokenizer.h
+$(OBJS): tokenizer.h history.h
 
 clean:
 	rm -f *.o Tokenizer
