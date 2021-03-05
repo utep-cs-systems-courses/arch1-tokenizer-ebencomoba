@@ -123,7 +123,7 @@ void free_tokens(char **tokens)
   /* We free the memory from the tokens and the token vector */
   char **currTkn = tokens;
   char *zero_ptr = '\0';
-  while (currTkn != zero_ptr) {
+  while (**currTkn) {
     free(*currTkn);
     currTkn++;
   }
